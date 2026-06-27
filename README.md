@@ -1,8 +1,8 @@
-# test_rusch
+# RUSH Telegram bot
 
-Tarix, biologiya va kimyo fanlari uchun 45 savolli baholash mezonlarini
-RUSH/Rasch uslubidagi qiyinlik koeffitsiyenti orqali 75 ballik tizimga
-o'tkazadigan kichik Python CLI.
+Tarix, biologiya va kimyo fanlari uchun 45 savolli testlarni
+RUSH/Rasch-style qiyinlik koeffitsiyenti orqali 75 ballik tizimga
+o'tkazadigan PHP Telegram bot.
 
 ## Formula
 
@@ -41,55 +41,78 @@ Klassik Rasch ehtimollik formulasi ham yordamchi funksiya sifatida bor:
 P(theta) = e^(theta-b) / (1 + e^(theta-b))
 ```
 
-## CSV formatlari
+## Savol banki
 
-Savollar foizi fayli (`examples/question_percentages.csv`):
-
-```csv
-subject,question,percent_correct
-tarix,1,48.77
-tarix,2,72.40
-```
-
-O'quvchi javoblari fayli (`examples/student_answers.csv`):
+Bot `data/questions.csv` faylidan foiz va javob kalitlarini o'qiydi.
 
 ```csv
-student_id,subject,question,correct
-ali,tarix,1,1
-ali,tarix,2,0
+subject,question,percent_correct,correct_answer
+tarix,1,48.77,A
+tarix,2,72.40,B
 ```
 
-`correct` ustuni uchun `1/0`, `true/false`, `ha/yo'q`, `togri/notogri`
-qiymatlari qabul qilinadi.
+Qo'llab-quvvatlanadigan fanlar:
 
-## Ishlatish
+- `tarix`
+- `biologiya`
+- `kimyo`
+
+Har bir fan uchun standart 45 ta savol talab qilinadi.
+
+## Telegram botni ishga tushirish
+
+1. Bot tokenini env orqali bering:
 
 ```bash
-python3 -m rusch_grading calculate \
-  --questions examples/question_percentages.csv \
-  --answers examples/student_answers.csv \
-  --output results.csv
+export TELEGRAM_BOT_TOKEN="123456:telegram-token"
 ```
 
-Natija:
-
-```csv
-student_id,subject,correct_count,question_count,raw_score,max_score,ball_75
-ali,biologiya,30,45,44.1234,67.5678,48.98
-```
-
-Standart holatda har bir fan uchun 45 ta savol talab qilinadi. Sinov yoki
-qisman hisoblash uchun:
+2. PHP built-in server bilan lokal ishga tushirish:
 
 ```bash
-python3 -m rusch_grading calculate \
-  --questions small_questions.csv \
-  --answers small_answers.csv \
-  --allow-partial
+php -S 0.0.0.0:8080 -t public
+```
+
+3. Webhookni serveringiz HTTPS URLiga ulang:
+
+```bash
+curl "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setWebhook?url=https://example.com/index.php"
+```
+
+Agar savol banki boshqa joyda bo'lsa:
+
+```bash
+export QUESTION_BANK_CSV="/path/to/questions.csv"
+```
+
+## Telegram buyruqlari
+
+```text
+/start
+/help
+/fanlar
+/formula
+/jadval tarix
+/ball tarix ABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDE
+/rush biologiya 101001101001101001101001101001101001101001101
+```
+
+- `/ball` - foydalanuvchining 45 ta A-E javobini CSVdagi kalit bilan solishtiradi.
+- `/rush` - oldindan tekshirilgan `1/0` natijalaridan ball hisoblaydi.
+- `/jadval` - har savol uchun foiz, kalit va `K_i` koeffitsiyentini ko'rsatadi.
+
+Bot natijada umumiy `Raw`, `Max`, `Ball / 75` va har bir savol bo'yicha
+berilgan ballni chiqaradi.
+
+## CLI orqali tekshirish
+
+```bash
+php bin/calculate.php --subject=tarix --answers=ABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDE
+php bin/calculate.php --subject=kimyo --correct=111000111000111000111000111000111000111000111
 ```
 
 ## Testlar
 
 ```bash
-python3 -m unittest discover -s tests
+php tests/run.php
 ```
