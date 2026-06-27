@@ -1,0 +1,17 @@
+{
+  "name": "cursor/rusch-telegram-bot",
+  "description": "PHP Telegram bot for RUSH/Rasch-style scoring of tarix, biologiya and kimyo tests.",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "RuschBot\\": "src/"
+    }
+  },
+  "scripts": {
+    "test": "php tests/run.php"
+  },
+  "require": {
+    "php": ">=8.1"
+  }
+}
