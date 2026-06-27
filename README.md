@@ -65,7 +65,7 @@ qiymatlari qabul qilinadi.
 ## Ishlatish
 
 ```bash
-python -m rusch_grading calculate \
+python3 -m rusch_grading calculate \
   --questions examples/question_percentages.csv \
   --answers examples/student_answers.csv \
   --output results.csv
@@ -82,7 +82,7 @@ Standart holatda har bir fan uchun 45 ta savol talab qilinadi. Sinov yoki
 qisman hisoblash uchun:
 
 ```bash
-python -m rusch_grading calculate \
+python3 -m rusch_grading calculate \
   --questions small_questions.csv \
   --answers small_answers.csv \
   --allow-partial
@@ -91,5 +91,5 @@ python -m rusch_grading calculate \
 ## Testlar
 
 ```bash
-python -m unittest
+python3 -m unittest discover -s tests
 ```
